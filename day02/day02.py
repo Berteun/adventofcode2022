@@ -10,7 +10,7 @@ class RPS(Enum):
 
     
 @dataclass(frozen=True)
-class Move:
+class Turn:
     me: RPS
     opp: RPS
 
@@ -21,7 +21,7 @@ class Move:
             or (self.me == RPS.Paper and self.opp == RPS.Rock))
 
     def me_lost(self):
-        return Move(me=self.opp, opp=self.me).me_won()
+        return Turn(me=self.opp, opp=self.me).me_won()
 
     def me_draw(self):
         return not self.me_won() and not self.me_lost()
@@ -56,9 +56,9 @@ me_map = {
 
 def parse_line_1(l):
     opp, me = l.split(' ')
-    return Move(me=me_map[me], opp=opp_map[opp])
+    return Turn(me=me_map[me], opp=opp_map[opp])
 
-def get_move(opp_raw, move):
+def interpret_turn(opp_raw, move):
     opp = opp_map[opp_raw]
     if move == 'Y':
         return opp
@@ -73,8 +73,8 @@ def get_move(opp_raw, move):
 
 def parse_line_2(l):
     opp_raw, move = l.split(' ')
-    me = get_move(opp_raw, move)
-    return Move(me, opp=opp_map[opp_raw])
+    me = interpret_turn(opp_raw, move)
+    return Turn(me, opp=opp_map[opp_raw])
 
 def read_input_1():
     return [parse_line_1(l.strip()) for l in open('input')]
@@ -83,18 +83,15 @@ def read_input_2():
     return [parse_line_2(l.strip()) for l in open('input')]
 
 
-def part1(moves):
-    return sum(m.score() for m in moves)
-
-def part2(moves):
+def part12(moves):
     return sum(m.score() for m in moves)
 
 def main():
     inp1 = read_input_1()
-    print(part1(inp1))
+    print(part12(inp1))
 
     inp2 = read_input_2()
-    print(part2(inp2))
+    print(part12(inp2))
 
 
 if __name__ == '__main__':
